@@ -10,9 +10,6 @@ Tutorial
 
 Install moviepy: go to cmd or preferably powershell and type "pip install moviepy"
 
-Download Imagemagick
-https://imagemagick.org/script/download.php#windows
-
 If you get any error update pip with "pip install --upgrade pip"
 
 And download Visual C++ Build Tools https://visualstudio.microsoft.com/downloads/?q=build+tools
