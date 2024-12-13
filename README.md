@@ -17,8 +17,6 @@ And download Visual C++ Build Tools https://visualstudio.microsoft.com/downloads
 ![select these options](https://i.sstatic.net/h3mTO.png)
 
 
-change_settings({"IMAGEMAGICK_BINARY": "C:\\Program Files\\ImageMagick-7.1.1-Q8\\magick.exe"})
-
 Video_n_Text.create_videos(text=text, template_number=0)
 
 put the path of ImageMagick in the file "auto_movie.py"
