@@ -15,6 +15,18 @@ def fit_text(text, max_length=20):
     result += line.strip()
     return result
 
+def merge_with_transparency(background_image, top_image):
+    #Open the images
+    background = Image.open(background_image)
+    top = Image.open(top_image)
+    #Make sure both images have the same mode
+    background = background. convert('RGBA')
+    top = top.convert('RGBA')
+    #Merge the images
+    background.alpha_composite(top)
+    #Save the resulting image
+    return background
+
 def txt_to_img(text, size=36, font="", color=(255, 255, 255),
                stroke_color=(0, 0, 0), stroke_width=0):
     img = Image.new("RGBA", (2000, 2000), (255, 0, 0, 0))
@@ -41,7 +53,7 @@ def txt_to_img(text, size=36, font="", color=(255, 255, 255),
         if f"U+{ord(char):04x}" in emojis_data.emojis.keys():
             emoji = Image.open(emojis_data.emojis[f"U+{ord(char):04x}"])
             emoji = emoji.resize((34, int(34*(emoji.height/emoji.width))))
-            img.paste(emoji, (x+5, y+4))
+            img.paste(emoji, (x+4, y+4))
             x += 10
             continue
 
@@ -65,7 +77,6 @@ def make_text(text, font, stroke_width=0):
     for img, px, i in zip(array_lines_img, array_lines_px, range(len(array_lines_px))):
         end.paste(img, ((max(array_lines_px)-px)//2, i*40))
     end.save("subs.png")
-
 
 text = "POV: Your AirPods died at the gym 🥴🤧"
 #text = "To fix this, you need to convert the image to RGB mode before saving it as a JPEG. Here's the modified code:"
