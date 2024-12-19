@@ -15,7 +15,7 @@ def hex_to_rgb(hexa):
         return int(hexa[1:3],16), int(hexa[3:5],16), int(hexa[5:7],16), int(hexa[7:],16)
     elif len(hexa) == 5:
         return int(hexa[1],16)*17, int(hexa[2],16)*17, int(hexa[3],16)*17, int(hexa[4],16)*17
-    else: raise TypeError(f"This is not an RGB hex code:{hexa}")
+    else: raise TypeError(f"This is not an RGB hex code: {hexa}")
 
 def fit_text(text, max_length=20):
     words = text.split(" ")
@@ -80,8 +80,9 @@ def txt_to_img(text, font, font_size=48, color=(255, 255, 255),
         draw.text((x, y), char, font=font, fill=color, spacing=8)
     return img, x
 
-def make_text(text, font, font_size=60, color="#000", stroke_width=0,
-              stroke_color="#000", background=False):
+def make_text(text, font, color="#000", stroke_width=0,
+              stroke_color="#000", background=False, bg_mode=None):
+    font_size=60
     text += "\n."
     array_lines_img = []
     array_lines_px = []
@@ -102,18 +103,25 @@ def make_text(text, font, font_size=60, color="#000", stroke_width=0,
     for img, px, i in zip(array_lines_img, array_lines_px, range(len(array_lines_px))):
         end = merge_with_transparency(end, img, ((max(array_lines_px)-px)//2, i*int(40*base)))
 
-    if background:
+    #background modes
+    if isinstance(bg_mode, str):
         background = hex_to_rgb(background)
         x, y = end.size
         the_end = Image.new("RGBA", (x+18, y-8), (0, 0, 0, 0))
-        #create mask
-        for i, z in enumerate(array_lines_px):
-            z *= 1.01
-            z = int(z)
-            layer = mask.resize((z+35, 90))
-            the_end = merge_with_transparency(the_end, layer, ((10+(max(array_lines_px)-z)//2), -7+(i*73)))
-        #Blend text with background
-        the_end = merge_with_transparency(the_end, end, (0, 0))
-
+        #set background mode
+        if bg_mode == "square":
+                layer = Image.new("RGBA", (x, y), background)
+                #Blend text with background
+                the_end = merge_with_transparency(layer, end, (0, 0))
+        elif bg_mode == "rounded":
+            for i, z in enumerate(array_lines_px):
+                layer = mask.resize((z+35, 90))
+                z *= 1.01
+                z = int(z)
+                the_end = merge_with_transparency(the_end, layer,
+                                ((10+(max(array_lines_px)-z)//2), -7+(i*73)))
+                #Blend text with background
+                the_end = merge_with_transparency(the_end, end, (0, 0))
         return the_end
     return end
+

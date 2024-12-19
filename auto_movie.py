@@ -21,12 +21,12 @@ class Video_n_Text:
             color=template["color"],
             stroke_width=template["stroke_width"],
             stroke_color=template["stroke_color"],
-            background=template["background"])
+            background=template["background"],
+            bg_mode=template["bg_mode"])
         center = (video_resolution-img.size[0])//2 #math for center text
         x, y = img.size
         base = video_resolution/x
         base *= .6
-        print(x, y, base)
         img.resize((int(x*base), int(y*base)))
         img_array = np.array(img)
         return ImageClip(img_array, duration=set_duration).set_position((center-20, 50))

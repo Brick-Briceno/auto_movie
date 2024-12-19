@@ -16,6 +16,8 @@ kerning_letters = {
     "Po": 20,
     "od": 20,
     "ds": 20,
+    "ke": 16,
+    "ko": 17,
     "Ho": 23,
     "la": 9,
     "mo": 27,
