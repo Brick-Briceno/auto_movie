@@ -6,7 +6,6 @@ import emojis_data
 mask = Image.open("mask.png")
 
 def hex_to_rgb(hexa):
-    #obvio se puede empezar con un # u otra cosa :v
     if len(hexa) == 7:
         return int(hexa[1:3],16), int(hexa[3:5],16), int(hexa[5:],16), 255
     elif len(hexa) == 4:
@@ -47,7 +46,12 @@ def txt_to_img(text, font, font_size=48, color=(255, 255, 255),
     font = ImageFont.truetype(font, font_size)
     x, y = 20, 0
     base = font_size*(1/32)
-    if stroke_width != 0: draw.text(
+    #The following conditions are to avoid a bug when the only character is an emoji
+    if f"U+{ord(text[0]):04x}" in emojis_data.emojis.keys() and len(text) == 1:
+        emoji = Image.open(emojis_data.emojis[f"U+{ord(text):04x}"])
+        emoji = emoji.resize((int(34*base), int(int(34*base)*(emoji.height/emoji.width))))
+        img = merge_with_transparency(img, emoji, (x-int(9*base), int(9-y*base)))
+    elif stroke_width != 0: draw.text(
         (x, y), text[0], font=font, fill=stroke_color,
         stroke_width=stroke_width)
     draw.text((x, y), text[0], font=font, fill=color, spacing=8)
@@ -67,7 +71,7 @@ def txt_to_img(text, font, font_size=48, color=(255, 255, 255),
             emoji = Image.open(emojis_data.emojis[f"U+{ord(char):04x}"])
             emoji = emoji.resize((int(34*base), int(int(34*base)*(emoji.height/emoji.width))))
             #img = merge_with_transparency(img, emoji, (x-15, y+4))
-            img = merge_with_transparency(img, emoji, (x-int(9*base), int(9-y*base)))
+            img = merge_with_transparency(img, emoji, (x-int(3*base), int(9-y*base)))
             x += int(base)*18
             continue
         elif not char.isascii():
@@ -78,6 +82,7 @@ def txt_to_img(text, font, font_size=48, color=(255, 255, 255),
             stroke_width=stroke_width)
         #text
         draw.text((x, y), char, font=font, fill=color, spacing=8)
+        #print(f"U+{ord(char):04x}", char)
     return img, x
 
 def make_text(text, font, color="#000", stroke_width=0,
@@ -125,3 +130,6 @@ def make_text(text, font, color="#000", stroke_width=0,
         return the_end
     return end
 
+make_text("Tick Tok made me\nbuy this🤩", "fonts/proxima-nova-7.ttf",
+          color="#F060A1", stroke_width=3, stroke_color="#F0E160",
+          background="#60DAF0", bg_mode="square").save("hi.png")
